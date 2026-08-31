@@ -174,7 +174,7 @@ export default function SystemReports({ anomalies }) {
 
             <div>
               <div className="flex justify-between mb-2">
-                <span className="text-sm text-slate-text">Low Shadow Ratio (<40%)</span>
+                <span className="text-sm text-slate-text">Low Shadow Ratio (&lt;40%)</span>
                 <span className="text-electric-cyan font-semibold">{lowShadowRatio}</span>
               </div>
               <div className="w-full bg-accent-purple/20 rounded-full h-3">
