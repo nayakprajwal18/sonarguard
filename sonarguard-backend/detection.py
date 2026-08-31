@@ -42,13 +42,13 @@ class SonarDetectionPipeline:
         self.shadow_strip_height = shadow_strip_height
         self.target_counter = 0  # For unique ID generation
     
-    def detect(self, image_array: np.ndarray, image_metadata: Dict = None) -> List[Dict]:
+    def detect(self, image_array: np.ndarray, metadata: Dict = None) -> List[Dict]:
         """
         Run full detection pipeline on a grayscale sonar image.
         
         Args:
             image_array: Grayscale numpy array (H, W) or PIL Image
-            image_metadata: Optional dict with 'latitude', 'longitude', 'timestamp'
+            metadata: Optional dict with 'latitude', 'longitude', 'timestamp'
         
         Returns:
             List of anomaly dicts with real, image-derived metrics
@@ -70,7 +70,7 @@ class SonarDetectionPipeline:
         # Verify each candidate and compute metrics
         anomalies = []
         for candidate in candidates:
-            anomaly = self._verify_candidate(candidate, image_array, image_metadata)
+            anomaly = self._verify_candidate(candidate, image_array, metadata)
             if anomaly is not None:
                 anomalies.append(anomaly)
         
@@ -400,13 +400,19 @@ def create_dummy_sonar_for_testing() -> np.ndarray:
     
     # Add test object 1: bright elongated blob (simulates debris)
     cv2.ellipse(img, (150, 100), (50, 20), 0, 0, 360, 180, -1)
+    # Shadow below object 1
+    cv2.rectangle(img, (120, 125), (180, 145), 40, -1)
     
     # Add test object 2: compact blob (simulates container)
     cv2.circle(img, (400, 120), 40, 160, -1)
+    # Shadow below object 2
+    cv2.rectangle(img, (360, 165), (440, 185), 50, -1)
     
     # Add test object 3: large irregular shape (simulates wreck)
     pts = np.array([[500, 200], [550, 180], [570, 220], [540, 240]], dtype=np.int32)
     cv2.polylines(img, [pts], True, 140)
     cv2.fillPoly(img, [pts], 150)
+    # Shadow below object 3
+    cv2.rectangle(img, (495, 245), (575, 265), 45, -1)
     
     return img
