@@ -3,7 +3,7 @@ from typing import List, Optional
 from datetime import datetime
 
 class Anomaly(BaseModel):
-    """Detected sonar anomaly model"""
+    """Detected sonar anomaly model - matches frontend expectations"""
     id: str
     target_class: str
     confidence: float = Field(ge=0, le=1)
@@ -34,6 +34,7 @@ class AnomalyDetectionResponse(BaseModel):
     anomalies: List[Anomaly]
     detection_count: int
     processing_time_ms: int
+    mode: str = "live"  # "live" = real detection, "demo" = hardcoded sample data
 
 class ValidationRequest(BaseModel):
     """Human validation request"""
@@ -45,3 +46,4 @@ class ExportRequest(BaseModel):
     """Export report request"""
     anomalies: List[Anomaly]
     format: str = "json"  # json or csv
+
