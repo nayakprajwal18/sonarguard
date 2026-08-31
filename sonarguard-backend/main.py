@@ -9,6 +9,7 @@ from typing import List
 from PIL import Image, ImageEnhance, ImageFilter
 import numpy as np
 import random
+import json
 
 # Import modules
 from models import AnomalyDetectionResponse, SonarImage, Anomaly
@@ -16,16 +17,19 @@ from models import AnomalyDetectionResponse, SonarImage, Anomaly
 app = FastAPI(
     title="SonarGuard API",
     description="AI-Powered Underwater Marine Debris Detection System",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url="/docs",
+    openapi_url="/openapi.json"
 )
 
-# CORS middleware
+# CORS middleware - Allow all origins for development
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Sample sonar image generator
@@ -230,17 +234,53 @@ async def validate_anomaly(target_id: str, is_valid: bool):
 async def export_report(anomalies_data: List[dict]):
     """Export anomalies as JSON/CSV"""
     try:
+        # Summary stats
+        confirmed = sum(1 for a in anomalies_data if a.get("validated") == True)
+        rejected = sum(1 for a in anomalies_data if a.get("validated") == False)
+        pending = sum(1 for a in anomalies_data if a.get("validated") is None)
+        
+        # Calculate shadow ratio stats
+        high_shadow = sum(1 for a in anomalies_data if a.get("shadow_ratio", 0) >= 0.4)
+        low_shadow = len(anomalies_data) - high_shadow
+        
+        # Average confidence
+        avg_confidence = sum(a.get("confidence", 0) for a in anomalies_data) / len(anomalies_data) if anomalies_data else 0
+        
         report = {
             "export_timestamp": datetime.now().isoformat(),
             "total_anomalies": len(anomalies_data),
-            "confirmed": sum(1 for a in anomalies_data if a.get("validated") == True),
-            "rejected": sum(1 for a in anomalies_data if a.get("validated") == False),
-            "pending": sum(1 for a in anomalies_data if a.get("validated") is None),
+            "statistics": {
+                "confirmed_detections": confirmed,
+                "rejected_detections": rejected,
+                "pending_review": pending,
+                "average_confidence": round(avg_confidence * 100, 2),
+                "high_shadow_ratio_targets": high_shadow,
+                "low_shadow_ratio_targets": low_shadow,
+            },
             "anomalies": anomalies_data
         }
         return report
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/api/stats")
+async def get_statistics():
+    """Get system statistics"""
+    try:
+        anomalies = generate_sample_anomalies()
+        confirmed = sum(1 for a in anomalies if a.get("validated") == True)
+        rejected = sum(1 for a in anomalies if a.get("validated") == False)
+        pending = sum(1 for a in anomalies if a.get("validated") is None)
+        
+        return {
+            "total_detections": len(anomalies),
+            "confirmed": confirmed,
+            "rejected": rejected,
+            "pending": pending,
+            "average_confidence": round(sum(a["confidence"] for a in anomalies) / len(anomalies) * 100, 2) if anomalies else 0,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
