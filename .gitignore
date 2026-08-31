@@ -1,0 +1,29 @@
+# Frontend
+sonarguard-frontend/node_modules/
+sonarguard-frontend/dist/
+sonarguard-frontend/.env
+sonarguard-frontend/.env.local
+sonarguard-frontend/.DS_Store
+
+# Backend
+sonarguard-backend/__pycache__/
+sonarguard-backend/*.pyc
+sonarguard-backend/.venv/
+sonarguard-backend/venv/
+sonarguard-backend/.env
+sonarguard-backend/.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

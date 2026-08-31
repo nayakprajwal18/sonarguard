@@ -1,0 +1,144 @@
+import { AlertCircle, TrendingUp, Zap, Users, Download } from 'lucide-react'
+import MetricCard from './MetricCard'
+import AnomalyChart from './AnomalyChart'
+
+export default function Dashboard({ anomalies, loading }) {
+  const confirmedDetections = anomalies.filter(a => a.validated === true).length
+  const totalDetections = anomalies.length
+  const averageConfidence = anomalies.length > 0 
+    ? (anomalies.reduce((sum, a) => sum + a.confidence, 0) / anomalies.length * 100).toFixed(1)
+    : 0
+
+  const detectionsByClass = {}
+  anomalies.forEach(a => {
+    detectionsByClass[a.target_class] = (detectionsByClass[a.target_class] || 0) + 1
+  })
+
+  return (
+    <div className="h-full overflow-y-auto p-8 space-y-8">
+      {/* Header */}
+      <div className="space-y-2">
+        <h2 className="text-3xl font-bold text-neon-violet">Detection Dashboard</h2>
+        <p className="text-slate-text">Real-time sonar anomaly monitoring and analysis</p>
+      </div>
+
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <MetricCard
+          icon={AlertCircle}
+          label="Total Detections"
+          value={totalDetections}
+          trend="+12%"
+          color="violet"
+        />
+        <MetricCard
+          icon={TrendingUp}
+          label="Confirmed Targets"
+          value={confirmedDetections}
+          trend={`${((confirmedDetections/totalDetections)*100).toFixed(0)}%`}
+          color="cyan"
+        />
+        <MetricCard
+          icon={Zap}
+          label="Avg Confidence"
+          value={`${averageConfidence}%`}
+          trend="High precision"
+          color="green"
+        />
+        <MetricCard
+          icon={Users}
+          label="Human Reviews"
+          value={anomalies.filter(a => a.validated === null).length}
+          trend="Pending review"
+          color="orange"
+        />
+      </div>
+
+      {/* Charts and Analysis */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Chart */}
+        <div className="lg:col-span-2 glass-card rounded-lg p-6 border border-accent-purple/20">
+          <h3 className="text-lg font-semibold text-neon-violet mb-4">Detection Confidence Distribution</h3>
+          <AnomalyChart anomalies={anomalies} />
+        </div>
+
+        {/* Detection Breakdown */}
+        <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
+          <h3 className="text-lg font-semibold text-neon-violet mb-4">Detections by Class</h3>
+          <div className="space-y-3">
+            {Object.entries(detectionsByClass).length > 0 ? (
+              Object.entries(detectionsByClass).map(([className, count]) => (
+                <div key={className} className="flex items-center justify-between">
+                  <span className="text-sm text-slate-text">{className}</span>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-neon-violet/20 rounded px-2 py-1">
+                      <span className="text-sm font-semibold text-neon-violet">{count}</span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-slate-text/70 text-sm">No detections yet</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Anomalies */}
+      <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-neon-violet">Recent Anomalies</h3>
+          <button className="flex items-center gap-2 px-3 py-2 rounded-lg bg-neon-violet/10 hover:bg-neon-violet/20 text-neon-violet transition-colors">
+            <Download className="w-4 h-4" />
+            <span className="text-sm">Export</span>
+          </button>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-accent-purple/20">
+                <th className="text-left py-3 px-4 text-slate-text font-semibold">Target ID</th>
+                <th className="text-left py-3 px-4 text-slate-text font-semibold">Class</th>
+                <th className="text-left py-3 px-4 text-slate-text font-semibold">Confidence</th>
+                <th className="text-left py-3 px-4 text-slate-text font-semibold">Shadow Ratio</th>
+                <th className="text-left py-3 px-4 text-slate-text font-semibold">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {anomalies.slice(0, 5).map((anomaly) => (
+                <tr key={anomaly.id} className="border-b border-accent-purple/10 hover:bg-accent-purple/10 transition-colors">
+                  <td className="py-3 px-4 text-electric-cyan font-mono">{anomaly.id}</td>
+                  <td className="py-3 px-4">{anomaly.target_class}</td>
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 bg-accent-purple/20 rounded-full h-2">
+                        <div
+                          className="bg-gradient-to-r from-neon-violet to-electric-cyan h-2 rounded-full"
+                          style={{ width: `${anomaly.confidence * 100}%` }}
+                        ></div>
+                      </div>
+                      <span>{(anomaly.confidence * 100).toFixed(0)}%</span>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">{(anomaly.shadow_ratio * 100).toFixed(1)}%</td>
+                  <td className="py-3 px-4">
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      anomaly.validated === true 
+                        ? 'bg-green-500/20 text-green-400'
+                        : anomaly.validated === false
+                        ? 'bg-red-500/20 text-red-400'
+                        : 'bg-yellow-500/20 text-yellow-400'
+                    }`}>
+                      {anomaly.validated === true ? 'Confirmed' : anomaly.validated === false ? 'Rejected' : 'Pending'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
