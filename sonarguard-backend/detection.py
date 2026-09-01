@@ -31,15 +31,17 @@ class SonarDetectionPipeline:
     
     def __init__(
         self,
-        min_contour_area: int = 50,
+        min_contour_area: int = 200,
         max_contour_area: int = 50000,
-        shadow_threshold_ratio: float = 0.6,
+        shadow_threshold_ratio: float = 0.7,
         shadow_strip_height: int = 20,
+        max_detections: int = 15,
     ):
         self.min_contour_area = min_contour_area
         self.max_contour_area = max_contour_area
         self.shadow_threshold_ratio = shadow_threshold_ratio
         self.shadow_strip_height = shadow_strip_height
+        self.max_detections = max_detections
         self.target_counter = 0  # For unique ID generation
     
     def detect(self, image_array: np.ndarray, metadata: Dict = None) -> List[Dict]:
@@ -76,6 +78,11 @@ class SonarDetectionPipeline:
         
         # Sort by confidence descending
         anomalies.sort(key=lambda x: x['confidence'], reverse=True)
+        
+        # Filter: minimum confidence floor (0.5) and max detections cap
+        anomalies = [a for a in anomalies if a['confidence'] >= 0.5]
+        anomalies = anomalies[:self.max_detections]
+        
         return anomalies
     
     def _preprocess(self, image: np.ndarray) -> np.ndarray:
