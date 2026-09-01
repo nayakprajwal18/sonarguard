@@ -18,7 +18,7 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
         </div>
         <div className="flex-1">
           <h1 className="text-xl font-bold text-neon-violet">SonarGuard</h1>
-          <p className="text-xs text-slate-text">Marine Debris Detection</p>
+          <p className="text-xs text-slate-text/80">Explainable AI for marine debris detection — AI flags, evidence backs it, humans decide.</p>
         </div>
       </div>
 
