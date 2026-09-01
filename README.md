@@ -117,7 +117,12 @@ Backend runs on `http://localhost:8000`
 
 ---
 
-## 🎨 UI Theme
+## 🎨 UI Theme & Messaging
+
+### Mission Statement
+> "Explainable AI for marine debris detection — AI flags, evidence backs it, humans decide."
+
+This core principle is reflected throughout the interface, emphasizing transparency and human authority in validation decisions.
 
 ### Color Palette
 | Element | Color | Hex |
@@ -139,10 +144,16 @@ Backend runs on `http://localhost:8000`
 ## 📊 Core Features
 
 ### 1. Dashboard
-- Real-time detection metrics
-- Confidence distribution chart
-- Detection breakdown by class
-- Recent anomalies table with quick filters
+- **Image Upload**: Direct upload with real-time sonar image analysis
+- **How It Works**: Collapsible explainer showing 4-step detection pipeline
+  1. Upload a sonar image
+  2. AI scans it and flags candidate objects
+  3. Each flag is checked against shadow, shape, and size — not just a confidence score
+  4. A human reviews the evidence and accepts or rejects
+- **Real-time Detection Metrics**: Updated immediately upon upload
+- **Confidence Distribution Chart**: Visual overview of detection confidence levels
+- **Detection Breakdown by Class**: Pie chart of target classifications
+- **Recent Anomalies Table**: Quick-view of top detections with filters
 
 ### 2. Swath Analyzer
 **Raw Sonar Swath:**
@@ -158,6 +169,8 @@ Backend runs on `http://localhost:8000`
 
 ### 3. XAI Evidence Panel
 - **Target Metrics**: ID, Class, Pixel dimensions, Elevation estimate, GPS coordinates
+- **Plain-English Reasoning**: Auto-generated explanation combining shadow and shape analysis
+  - Example: "Flagged because of strong acoustic shadow confirms the object rises off the seafloor and elongated shape consistent with rope/net/pipe."
 - **Confidence Metric**: Visual progress bar with assessment
 - **Acoustic Shadow Analysis**:
   - Shadow ratio percentage
@@ -189,7 +202,38 @@ Backend runs on `http://localhost:8000`
 
 ---
 
-## 🔌 API Endpoints
+## 🔬 Detection Pipeline (Classical CV)
+
+SonarGuard uses a transparent, explainable classical computer vision approach (not black-box ML):
+
+### Algorithm
+1. **Preprocessing**: Histogram equalization + median denoise + contrast enhancement
+2. **Candidate Generation**: Otsu's adaptive thresholding + contour detection
+3. **Verification**: Each candidate validated against 3 metrics:
+   - **Shadow Ratio** (0-1): Acoustic shadow darkness below object (>0.4 = confirmed)
+   - **Shape Score** (0-1): Aspect ratio + solidity + contour extent
+   - **Size Score** (0-1): Plausibility based on pixel dimensions
+4. **Confidence Scoring**: `0.35 × shape + 0.35 × size + 0.30 × shadow`
+5. **Heuristic Classification**: Rule-based target type assignment (not trained model)
+
+### Tunable Parameters
+| Parameter | Default | Purpose |
+|-----------|---------|---------|
+| `min_contour_area` | 200px | Filter noise |
+| `max_contour_area` | 50,000px | Reject image artifacts |
+| `shadow_threshold_ratio` | 0.7 | Darkness comparison threshold |
+| `max_detections` | 15 | Cap spurious detections |
+| `confidence_floor` | 0.5 | Drop low-confidence candidates |
+
+### Why Classical CV?
+- **Transparency**: Every detection decision is explainable
+- **No Training Data Required**: Works with domain heuristics
+- **Ready for ML**: Isolated `_generate_candidates()` function designed for YOLO/U-Net swap
+- **Low Latency**: CPU-only, <2s per image
+
+---
+
+
 
 ### Detection
 - **GET** `/api/detect-anomalies` - Get detected anomalies with sample sonar image
