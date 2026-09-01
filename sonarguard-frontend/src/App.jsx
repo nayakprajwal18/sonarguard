@@ -37,10 +37,15 @@ export default function App() {
     }
   }
 
+  const handleImageUpload = (detections, processedImage) => {
+    setAnomalies(detections)
+    setSampleSonarImage(processedImage)
+  }
+
   const renderPage = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <Dashboard anomalies={anomalies} loading={loading} />
+        return <Dashboard anomalies={anomalies} loading={loading} onImageUpload={handleImageUpload} />
       case 'swath':
         return <SwathAnalyzer sonarImage={sampleSonarImage} anomalies={anomalies} setAnomalies={setAnomalies} />
       case 'logs':
@@ -50,7 +55,7 @@ export default function App() {
       case 'reports':
         return <SystemReports anomalies={anomalies} />
       default:
-        return <Dashboard anomalies={anomalies} loading={loading} />
+        return <Dashboard anomalies={anomalies} loading={loading} onImageUpload={handleImageUpload} />
     }
   }
 

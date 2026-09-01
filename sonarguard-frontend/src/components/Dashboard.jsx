@@ -1,8 +1,39 @@
-import { AlertCircle, TrendingUp, Zap, Users, Download } from 'lucide-react'
+import { AlertCircle, TrendingUp, Zap, Users, Download, Upload } from 'lucide-react'
+import { useState } from 'react'
 import MetricCard from './MetricCard'
 import AnomalyChart from './AnomalyChart'
+import api from '../services/api'
 
-export default function Dashboard({ anomalies, loading }) {
+export default function Dashboard({ anomalies, loading, onImageUpload }) {
+  const [uploadLoading, setUploadLoading] = useState(false)
+  const [uploadError, setUploadError] = useState(null)
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      setUploadLoading(true)
+      setUploadError(null)
+      
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      const response = await api.post('/upload-sonar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      
+      if (response.data && response.data.detections) {
+        onImageUpload(response.data.detections, response.data.processed_image)
+      }
+    } catch (err) {
+      console.error('Upload failed:', err)
+      setUploadError('Failed to upload image. Please try again.')
+    } finally {
+      setUploadLoading(false)
+      event.target.value = ''
+    }
+  }
   const confirmedDetections = anomalies.filter(a => a.validated === true).length
   const totalDetections = anomalies.length
   const averageConfidence = anomalies.length > 0 
@@ -20,6 +51,35 @@ export default function Dashboard({ anomalies, loading }) {
       <div className="space-y-2">
         <h2 className="text-3xl font-bold text-neon-violet">Detection Dashboard</h2>
         <p className="text-slate-text">Real-time sonar anomaly monitoring and analysis</p>
+      </div>
+
+      {/* Upload Section */}
+      <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-neon-violet mb-1">Upload Sonar Image</h3>
+            <p className="text-slate-text/70 text-sm">Upload a new sonar image to analyze</p>
+          </div>
+          <label className="flex items-center gap-2 px-4 py-2 rounded-lg bg-neon-violet/20 hover:bg-neon-violet/30 text-neon-violet transition-colors cursor-pointer">
+            <Upload className="w-4 h-4" />
+            <span className="text-sm font-medium">Select Image</span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              disabled={uploadLoading}
+              className="hidden"
+            />
+          </label>
+        </div>
+        {uploadError && (
+          <div className="mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+            <p className="text-red-400 text-sm">{uploadError}</p>
+          </div>
+        )}
+        {uploadLoading && (
+          <div className="mt-3 text-sm text-slate-text/70">Analyzing image...</div>
+        )}
       </div>
 
       {/* Metrics Grid */}
