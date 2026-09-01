@@ -139,8 +139,8 @@ export default function AnomalyLogs({ anomalies, setAnomalies }) {
             <tr className="border-b border-accent-purple/20">
               <th className="text-left py-3 px-4 text-slate-text font-semibold">ID</th>
               <th className="text-left py-3 px-4 text-slate-text font-semibold">Class</th>
-              <th className="text-left py-3 px-4 text-slate-text font-semibold">Confidence</th>
-              <th className="text-left py-3 px-4 text-slate-text font-semibold">Shadow Ratio</th>
+              <th className="text-left py-3 px-4 text-slate-text font-semibold">Confidence Score</th>
+              <th className="text-left py-3 px-4 text-slate-text font-semibold">Shadow Ratio (confirms real object)</th>
               <th className="text-left py-3 px-4 text-slate-text font-semibold">Elevation (m)</th>
               <th className="text-left py-3 px-4 text-slate-text font-semibold">Location</th>
               <th className="text-left py-3 px-4 text-slate-text font-semibold">Status</th>

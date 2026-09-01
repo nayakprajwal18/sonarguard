@@ -152,11 +152,11 @@ export default function SurveyMap({ anomalies }) {
               <p className="font-mono text-neon-violet">{selectedPin.elevation_estimate.toFixed(2)}m</p>
             </div>
             <div>
-              <p className="text-slate-text/70">Confidence</p>
+              <p className="text-slate-text/70">Confidence Score</p>
               <p className="text-neon-violet font-semibold">{(selectedPin.confidence * 100).toFixed(1)}%</p>
             </div>
             <div>
-              <p className="text-slate-text/70">Shadow Ratio</p>
+              <p className="text-slate-text/70">Shadow Ratio (confirms real object)</p>
               <p className="text-electric-cyan font-semibold">{(selectedPin.shadow_ratio * 100).toFixed(1)}%</p>
             </div>
             <div>

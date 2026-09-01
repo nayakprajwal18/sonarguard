@@ -69,7 +69,7 @@ export default function SystemReports({ anomalies }) {
           { label: 'Confirmed', value: confirmedCount, color: 'green' },
           { label: 'Pending Review', value: pendingCount, color: 'yellow' },
           { label: 'Rejected', value: rejectedCount, color: 'red' },
-          { label: 'Avg. Confidence', value: `${(avgConfidence * 100).toFixed(1)}%`, color: 'cyan' },
+          { label: 'Avg. Confidence Score', value: `${(avgConfidence * 100).toFixed(1)}%`, color: 'cyan' },
         ].map((metric, i) => (
           <div key={i} className={`glass-card rounded-lg p-4 border border-accent-purple/20 text-center`}>
             <p className="text-slate-text/70 text-xs mb-1">{metric.label}</p>
@@ -139,7 +139,7 @@ export default function SystemReports({ anomalies }) {
 
         {/* Confidence Distribution */}
         <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
-          <h3 className="text-lg font-semibold text-neon-violet mb-4">Confidence Distribution</h3>
+          <h3 className="text-lg font-semibold text-neon-violet mb-4">Confidence Score Distribution</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={confidenceData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(46, 31, 84, 0.3)" />
@@ -160,7 +160,7 @@ export default function SystemReports({ anomalies }) {
           <div className="space-y-4">
             <div>
               <div className="flex justify-between mb-2">
-                <span className="text-sm text-slate-text">High Shadow Ratio (≥40%)</span>
+                <span className="text-sm text-slate-text">High Shadow Ratio (≥40% confirms real object)</span>
                 <span className="text-neon-violet font-semibold">{highShadowRatio}</span>
               </div>
               <div className="w-full bg-accent-purple/20 rounded-full h-3">
