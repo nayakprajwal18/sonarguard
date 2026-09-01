@@ -7,6 +7,7 @@ import api from '../services/api'
 export default function Dashboard({ anomalies, loading, onImageUpload }) {
   const [uploadLoading, setUploadLoading] = useState(false)
   const [uploadError, setUploadError] = useState(null)
+  const [showHowItWorks, setShowHowItWorks] = useState(false)
 
   const handleFileUpload = async (event) => {
     const file = event.target.files?.[0]
@@ -79,6 +80,37 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
         )}
         {uploadLoading && (
           <div className="mt-3 text-sm text-slate-text/70">Analyzing image...</div>
+        )}
+      </div>
+
+      {/* How It Works Panel */}
+      <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
+        <button
+          onClick={() => setShowHowItWorks(!showHowItWorks)}
+          className="w-full flex items-center justify-between text-left"
+        >
+          <h3 className="text-lg font-semibold text-neon-violet">How it works</h3>
+          <span className="text-slate-text text-xl">{showHowItWorks ? '−' : '+'}</span>
+        </button>
+        {showHowItWorks && (
+          <div className="mt-4 space-y-3 text-sm text-slate-text">
+            <div className="flex gap-3">
+              <span className="text-neon-violet font-bold">1.</span>
+              <p>Upload a sonar image</p>
+            </div>
+            <div className="flex gap-3">
+              <span className="text-neon-violet font-bold">2.</span>
+              <p>AI scans it and flags candidate objects</p>
+            </div>
+            <div className="flex gap-3">
+              <span className="text-neon-violet font-bold">3.</span>
+              <p>Each flag is checked against shadow, shape, and size — not just a confidence score</p>
+            </div>
+            <div className="flex gap-3">
+              <span className="text-neon-violet font-bold">4.</span>
+              <p>A human reviews the evidence and accepts or rejects</p>
+            </div>
+          </div>
         )}
       </div>
 
