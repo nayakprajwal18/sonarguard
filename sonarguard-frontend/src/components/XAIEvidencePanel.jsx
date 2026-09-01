@@ -1,5 +1,20 @@
 import { CheckCircle, XCircle, AlertTriangle, Gauge } from 'lucide-react'
 
+function getReasonString(anomaly) {
+  const shadowRatio = anomaly.shadow_ratio || 0
+  const aspectRatio = anomaly.bbox_width / (anomaly.bbox_height || 1)
+  
+  let shadowClause = shadowRatio >= 0.4
+    ? "strong acoustic shadow confirms the object rises off the seafloor"
+    : "weak shadow contrast — lower confidence this is a raised object"
+  
+  let shapeClause = aspectRatio > 2 || aspectRatio < 0.5
+    ? "elongated shape consistent with rope/net/pipe"
+    : "compact shape consistent with a solid object"
+  
+  return `Flagged because of ${shadowClause} and ${shapeClause}.`
+}
+
 export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
   if (!selectedAnomaly) {
     return (
@@ -28,6 +43,11 @@ export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
           </span>
         </div>
         <p className="text-xs text-slate-text/70">Explainable AI Evidence Panel</p>
+      </div>
+
+      {/* Plain-English Reasoning */}
+      <div className="p-4 bg-neon-violet/5 rounded-lg border border-neon-violet/20">
+        <p className="text-sm text-slate-text leading-relaxed">{getReasonString(selectedAnomaly)}</p>
       </div>
 
       {/* Target Metrics */}
