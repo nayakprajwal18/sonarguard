@@ -231,9 +231,9 @@ class SonarDetectionPipeline:
             'elevation_estimate': round(elevation_estimate, 1),
             'latitude': round(latitude, 6),
             'longitude': round(longitude, 6),
+            'location_estimated': location_confidence == False,
             'validated': None,
             'timestamp': datetime.now().isoformat(),
-            '_location_estimated': location_confidence == False,  # Internal flag
         }
         
         return anomaly

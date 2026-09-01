@@ -57,9 +57,16 @@ export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
           </div>
           <div className="flex justify-between">
             <span className="text-slate-text">GPS Coordinates:</span>
-            <span className="font-mono text-electric-cyan text-xs">
-              {selectedAnomaly.latitude.toFixed(4)}, {selectedAnomaly.longitude.toFixed(4)}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-electric-cyan text-xs">
+                {selectedAnomaly.latitude.toFixed(4)}, {selectedAnomaly.longitude.toFixed(4)}
+              </span>
+              {selectedAnomaly.location_estimated && (
+                <span className="text-xs px-2 py-1 rounded-full bg-orange-500/20 text-orange-400 whitespace-nowrap">
+                  Estimated
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>

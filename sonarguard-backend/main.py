@@ -198,10 +198,6 @@ async def upload_sonar(file: UploadFile = File(...)):
         # Run real detection pipeline
         anomalies = detection_pipeline.detect(img_array, metadata=None)
         
-        # Clean up internal flags before returning
-        for anomaly in anomalies:
-            anomaly.pop('_location_estimated', None)
-        
         # Store for fallback
         last_uploaded_image = img
         last_uploaded_anomalies = anomalies

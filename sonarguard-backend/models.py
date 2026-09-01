@@ -17,6 +17,7 @@ class Anomaly(BaseModel):
     elevation_estimate: float
     latitude: float
     longitude: float
+    location_estimated: bool = False
     validated: Optional[bool] = None
     timestamp: str
 
