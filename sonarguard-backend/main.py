@@ -244,6 +244,8 @@ async def detect_anomalies(mode: str = "live"):
             ).dict()
         
         else:  # mode="live" (default)
+            global last_uploaded_image
+            
             if last_uploaded_image is not None:
                 # Run real detection on last uploaded image
                 img_array = np.array(last_uploaded_image)
@@ -252,6 +254,7 @@ async def detect_anomalies(mode: str = "live"):
                 # Clean up internal flags
                 for anomaly in anomalies:
                     anomaly.pop('_location_estimated', None)
+                img_to_encode = last_uploaded_image
             else:
                 # No image uploaded yet: fallback to synthetic test image with real detection
                 synthetic_img = create_dummy_sonar_for_testing()
@@ -259,11 +262,11 @@ async def detect_anomalies(mode: str = "live"):
                 for anomaly in anomalies:
                     anomaly.pop('_location_estimated', None)
                 # Convert to PIL for consistency
-                last_uploaded_image = Image.fromarray(synthetic_img)
+                img_to_encode = Image.fromarray(synthetic_img)
             
             # Convert image to base64
             buffered = io.BytesIO()
-            last_uploaded_image.save(buffered, format="PNG")
+            img_to_encode.save(buffered, format="PNG")
             img_str = base64.b64encode(buffered.getvalue()).decode()
             sonar_image = f"data:image/png;base64,{img_str}"
             
