@@ -4,15 +4,15 @@ function getReasonString(anomaly) {
   const shadowRatio = anomaly.shadow_ratio || 0
   const aspectRatio = anomaly.bbox_width / (anomaly.bbox_height || 1)
   
-  let shadowClause = shadowRatio >= 0.4
-    ? "strong acoustic shadow confirms the object rises off the seafloor"
-    : "weak shadow contrast — lower confidence this is a raised object"
+  let shadowExplanation = shadowRatio >= 0.4
+    ? "This target casts a strong shadow on the seafloor, confirming it's a solid object raised above the bottom."
+    : "This target's shadow is weak, which might indicate a false alarm or flat debris lying on the seafloor."
   
-  let shapeClause = aspectRatio > 2 || aspectRatio < 0.5
-    ? "elongated shape consistent with rope/net/pipe"
-    : "compact shape consistent with a solid object"
+  let shapeExplanation = aspectRatio > 2 || aspectRatio < 0.5
+    ? "The target is long and thin, possibly a rope, cable, pipe, or similar object."
+    : "The target is compact and rounded, which is typical of debris or shipwreck material."
   
-  return `Flagged because of ${shadowClause} and ${shapeClause}.`
+  return `${shadowExplanation} ${shapeExplanation}`
 }
 
 export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
@@ -96,10 +96,10 @@ export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
         </div>
         <p className="text-xs text-text-muted leading-relaxed">
           {parseFloat(confidencePercent) > 80
-            ? '✓ High confidence detection'
+            ? 'High confidence detection — likely a real object'
             : parseFloat(confidencePercent) > 50
-            ? '◐ Medium confidence - human review recommended'
-            : '⚠ Low confidence - verify manually'}
+            ? 'Medium confidence — recommend human review'
+            : 'Low confidence — verify manually before accepting'}
         </p>
       </div>
 
@@ -130,11 +130,11 @@ export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
           ></div>
         </div>
         <div className="space-y-1 text-xs text-text-muted">
-          <p>Threshold: {(shadowRatioThreshold * 100).toFixed(0)}% (seafloor confirmation)</p>
+          <p>Threshold: {(shadowRatioThreshold * 100).toFixed(0)}% (required for confirmation)</p>
           <p className={isHighConfidenceShadow ? 'text-emerald-400' : 'text-amber-400'}>
             {isHighConfidenceShadow
-              ? '✓ Shadow CONFIRMED - Valid target with acoustic elevation'
-              : '⚠ Shadow LOW - May be false positive'}
+              ? 'Shadow confirmed — This object is raised above the seafloor'
+              : 'Shadow weak — May indicate false positive, verify manually'}
           </p>
         </div>
       </div>

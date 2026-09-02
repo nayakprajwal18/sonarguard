@@ -43,7 +43,7 @@ export default function AnomalyChart({ anomalies }) {
         <XAxis dataKey="range" stroke="#CBD5E1" />
         <YAxis stroke="#CBD5E1" />
         <Tooltip content={customTooltip} />
-        <Bar dataKey="count" fill="#8B5CF6" radius={[8, 8, 0, 0]} />
+        <Bar dataKey="count" fill="#06B6D4" radius={[8, 8, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   )

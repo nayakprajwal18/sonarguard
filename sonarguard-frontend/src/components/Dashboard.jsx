@@ -82,39 +82,19 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
               <h1 className="text-3xl font-bold text-text-primary">SONAR COMMAND CENTER</h1>
               <p className="text-sm text-text-muted mt-1">Real-time detection and human-in-the-loop validation dashboard</p>
             </div>
-            {/* Decorative Waveform Visualization */}
-            <svg 
-              width="160" 
-              height="45" 
-              viewBox="0 0 160 45" 
-              className="opacity-50"
-              aria-label="Sonar waveform visualization"
-              role="img"
-            >
-              <polyline
-                points="0,22 8,18 16,26 24,12 32,30 40,8 48,35 56,5 64,40 72,2 80,45 88,0 96,43 104,3 112,42 120,4 128,40 136,5 144,35 152,12 160,22"
-                stroke="url(#waveGradient)"
-                strokeWidth="2"
-                fill="none"
-                vectorEffect="non-scaling-stroke"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <defs>
-                <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.5" />
-                  <stop offset="50%" stopColor="#0ea5e9" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.5" />
-                </linearGradient>
-              </defs>
-            </svg>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="p-8 space-y-8">
+      <div className="p-8 space-y-4">
         
+        {/* Data Timestamp */}
+        <div className="text-xs text-text-muted text-right px-2">
+          <Clock className="w-3 h-3 inline mr-1" />
+          Data refreshed: {new Date().toLocaleTimeString()}
+        </div>
+
         {/* Top Metrics Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
@@ -151,7 +131,7 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Large Sonar Panel (Left - 2/3 width) */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-3">
             {/* Upload Section */}
             <div className="glass-card rounded-lg p-8 border border-cyan-600/30 bg-navy-900/50">
               <div className="space-y-4">
@@ -285,7 +265,7 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
           </div>
 
           {/* Right Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             
             {/* Latest Target / Detection Insights */}
             {latestTarget ? (
