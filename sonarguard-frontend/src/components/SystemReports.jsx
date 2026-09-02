@@ -1,5 +1,5 @@
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts'
-import { FileText, TrendingUp, AlertTriangle } from 'lucide-react'
+import { FileText, TrendingUp, AlertTriangle, Activity } from 'lucide-react'
 
 export default function SystemReports({ anomalies }) {
   // Calculate statistics
@@ -19,8 +19,8 @@ export default function SystemReports({ anomalies }) {
 
   // Status distribution
   const statusData = [
-    { name: 'Confirmed', value: confirmedCount, color: '#22c55e' },
-    { name: 'Pending', value: pendingCount, color: '#8B5CF6' },
+    { name: 'Verified', value: confirmedCount, color: '#10b981' },
+    { name: 'Pending', value: pendingCount, color: '#06b6d4' },
     { name: 'Rejected', value: rejectedCount, color: '#ef4444' },
   ].filter(s => s.value > 0)
 
@@ -45,9 +45,9 @@ export default function SystemReports({ anomalies }) {
   const customTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-dark-purple border border-neon-violet/30 rounded-lg p-3 text-sm">
-          <p className="text-electric-cyan font-semibold">{payload[0].payload.range || payload[0].name}</p>
-          <p className="text-neon-violet">Count: {payload[0].value}</p>
+        <div className="bg-navy-900 border border-cyan-600/50 rounded-lg p-3 text-sm">
+          <p className="text-cyan-400 font-semibold">{payload[0].payload.range || payload[0].name}</p>
+          <p className="text-text-secondary">Count: {payload[0].value}</p>
         </div>
       )
     }
@@ -55,162 +55,204 @@ export default function SystemReports({ anomalies }) {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-8 space-y-8">
+    <div className="h-full overflow-y-auto bg-gradient-to-b from-navy-950 to-navy-900">
       {/* Header */}
-      <div className="space-y-2">
-        <h2 className="text-3xl font-bold text-neon-violet">System Reports</h2>
-        <p className="text-slate-text">Comprehensive anomaly detection analytics and insights</p>
+      <div className="border-b border-cyan-600/20 bg-navy-950/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="px-8 py-6">
+          <h1 className="text-3xl font-bold text-text-primary">SYSTEM REPORTS</h1>
+          <p className="text-sm text-text-muted mt-1">Comprehensive detection analytics and performance insights</p>
+        </div>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {[
-          { label: 'Total Detections', value: totalDetections, color: 'violet' },
-          { label: 'Confirmed', value: confirmedCount, color: 'green' },
-          { label: 'Pending Review', value: pendingCount, color: 'yellow' },
-          { label: 'Rejected', value: rejectedCount, color: 'red' },
-          { label: 'Avg. Confidence Score', value: `${(avgConfidence * 100).toFixed(1)}%`, color: 'cyan' },
-        ].map((metric, i) => (
-          <div key={i} className={`glass-card rounded-lg p-4 border border-accent-purple/20 text-center`}>
-            <p className="text-slate-text/70 text-xs mb-1">{metric.label}</p>
-            <p className={`text-2xl font-bold ${
-              metric.color === 'violet' ? 'text-neon-violet' :
-              metric.color === 'cyan' ? 'text-electric-cyan' :
-              metric.color === 'green' ? 'text-green-400' :
-              metric.color === 'yellow' ? 'text-yellow-400' :
-              'text-red-400'
-            }`}>
-              {metric.value}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Status Distribution */}
-        <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
-          <h3 className="text-lg font-semibold text-neon-violet mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" />
-            Validation Status Distribution
-          </h3>
-          {statusData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={statusData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, value }) => `${name}: ${value}`}
-                  outerRadius={80}
-                  fill="#8B5CF6"
-                  dataKey="value"
-                >
-                  {statusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip content={customTooltip} />
-              </PieChart>
-            </ResponsiveContainer>
-          ) : (
-            <p className="text-slate-text/50 text-center py-12">No data available</p>
-          )}
+      <div className="p-8 space-y-8">
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          {[
+            { label: 'Total Detections', value: totalDetections, color: 'cyan', icon: Activity },
+            { label: 'Verified', value: confirmedCount, color: 'emerald', icon: null },
+            { label: 'Pending Review', value: pendingCount, color: 'amber', icon: null },
+            { label: 'Rejected', value: rejectedCount, color: 'red', icon: null },
+            { label: 'Avg. Confidence', value: `${(avgConfidence * 100).toFixed(1)}%`, color: 'cyan', icon: null },
+          ].map((metric, i) => {
+            const Icon = metric.icon
+            return (
+              <div key={i} className={`glass-card rounded-lg p-4 border border-cyan-600/30 bg-navy-900/50 text-center`}>
+                <p className="text-text-muted text-xs uppercase tracking-wide mb-2">{metric.label}</p>
+                <p className={`text-3xl font-bold ${
+                  metric.color === 'cyan' ? 'text-cyan-400' :
+                  metric.color === 'emerald' ? 'text-emerald-400' :
+                  metric.color === 'amber' ? 'text-amber-400' :
+                  'text-red-400'
+                }`}>
+                  {metric.value}
+                  {Icon && <Icon className="w-4 h-4 inline-block ml-2" />}
+                </p>
+              </div>
+            )
+          })}
         </div>
 
-        {/* Class Distribution */}
-        <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
-          <h3 className="text-lg font-semibold text-neon-violet mb-4">Detection by Class</h3>
-          {classData.length > 0 ? (
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Status Distribution */}
+          <div className="glass-card rounded-lg p-6 border border-cyan-600/30 bg-navy-900/50">
+            <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-6 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-cyan-400" />
+              Validation Status Distribution
+            </h3>
+            {statusData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={statusData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, value }) => `${name}: ${value}`}
+                    outerRadius={80}
+                    fill="#06b6d4"
+                    dataKey="value"
+                  >
+                    {statusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={customTooltip} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="text-text-muted text-center py-12">No data available</p>
+            )}
+          </div>
+
+          {/* Class Distribution */}
+          <div className="glass-card rounded-lg p-6 border border-cyan-600/30 bg-navy-900/50">
+            <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-6">Detection by Target Class</h3>
+            {classData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={classData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(6, 182, 212, 0.1)" />
+                  <XAxis dataKey="name" stroke="rgba(148, 163, 184, 0.5)" />
+                  <YAxis stroke="rgba(148, 163, 184, 0.5)" />
+                  <Tooltip content={customTooltip} />
+                  <Bar dataKey="value" fill="#06b6d4" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="text-text-muted text-center py-12">No data available</p>
+            )}
+          </div>
+
+          {/* Confidence Distribution */}
+          <div className="glass-card rounded-lg p-6 border border-cyan-600/30 bg-navy-900/50">
+            <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-6">Confidence Score Distribution</h3>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={classData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(46, 31, 84, 0.3)" />
-                <XAxis dataKey="name" stroke="#CBD5E1" />
-                <YAxis stroke="#CBD5E1" />
+              <BarChart data={confidenceData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(6, 182, 212, 0.1)" />
+                <XAxis dataKey="range" stroke="rgba(148, 163, 184, 0.5)" />
+                <YAxis stroke="rgba(148, 163, 184, 0.5)" />
                 <Tooltip content={customTooltip} />
-                <Bar dataKey="value" fill="#8B5CF6" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="count" fill="#06b6d4" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          ) : (
-            <p className="text-slate-text/50 text-center py-12">No data available</p>
-          )}
-        </div>
+          </div>
 
-        {/* Confidence Distribution */}
-        <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
-          <h3 className="text-lg font-semibold text-neon-violet mb-4">Confidence Score Distribution</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={confidenceData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(46, 31, 84, 0.3)" />
-              <XAxis dataKey="range" stroke="#CBD5E1" />
-              <YAxis stroke="#CBD5E1" />
-              <Tooltip content={customTooltip} />
-              <Bar dataKey="count" fill="#06B6D4" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+          {/* Shadow Ratio Analysis */}
+          <div className="glass-card rounded-lg p-6 border border-cyan-600/30 bg-navy-900/50">
+            <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-6 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-cyan-400" />
+              Acoustic Shadow Analysis
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm text-text-secondary">High Shadow Ratio (≥40%)</span>
+                  <span className="text-emerald-400 font-semibold">{highShadowRatio}</span>
+                </div>
+                <div className="w-full bg-navy-800 rounded-full h-3 border border-cyan-600/10">
+                  <div
+                    className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-3 rounded-full"
+                    style={{ width: `${totalDetections > 0 ? (highShadowRatio / totalDetections) * 100 : 0}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-emerald-400/70 mt-1">Valid targets with confirmed seafloor elevation</p>
+              </div>
 
-        {/* Shadow Ratio Analysis */}
-        <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
-          <h3 className="text-lg font-semibold text-neon-violet mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5" />
-            Acoustic Shadow Analysis
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-slate-text">High Shadow Ratio (≥40% confirms real object)</span>
-                <span className="text-neon-violet font-semibold">{highShadowRatio}</span>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm text-text-secondary">Low Shadow Ratio (&lt;40%)</span>
+                  <span className="text-amber-400 font-semibold">{lowShadowRatio}</span>
+                </div>
+                <div className="w-full bg-navy-800 rounded-full h-3 border border-cyan-600/10">
+                  <div
+                    className="bg-gradient-to-r from-amber-500 to-amber-400 h-3 rounded-full"
+                    style={{ width: `${totalDetections > 0 ? (lowShadowRatio / totalDetections) * 100 : 0}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-amber-400/70 mt-1">Requires manual review - potential false positives</p>
               </div>
-              <div className="w-full bg-accent-purple/20 rounded-full h-3">
-                <div
-                  className="bg-green-500 h-3 rounded-full"
-                  style={{ width: `${totalDetections > 0 ? (highShadowRatio / totalDetections) * 100 : 0}%` }}
-                ></div>
-              </div>
-              <p className="text-xs text-green-400 mt-1">Valid targets with confirmed seafloor elevation</p>
-            </div>
-
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-slate-text">Low Shadow Ratio (&lt;40%)</span>
-                <span className="text-electric-cyan font-semibold">{lowShadowRatio}</span>
-              </div>
-              <div className="w-full bg-accent-purple/20 rounded-full h-3">
-                <div
-                  className="bg-orange-500 h-3 rounded-full"
-                  style={{ width: `${totalDetections > 0 ? (lowShadowRatio / totalDetections) * 100 : 0}%` }}
-                ></div>
-              </div>
-              <p className="text-xs text-orange-400 mt-1">Requires manual review - potential false positives</p>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Report Summary */}
-      <div className="glass-card rounded-lg p-6 border border-accent-purple/20">
-        <h3 className="text-lg font-semibold text-neon-violet mb-4 flex items-center gap-2">
-          <FileText className="w-5 h-5" />
-          Analysis Summary
-        </h3>
-        <div className="space-y-3 text-sm text-slate-text">
-          <p>
-            <span className="text-neon-violet font-semibold">• Detection Performance:</span> {totalDetections} anomalies detected with average confidence of {(avgConfidence * 100).toFixed(1)}%
-          </p>
-          <p>
-            <span className="text-neon-violet font-semibold">• Validation Status:</span> {confirmedCount} confirmed ({((confirmedCount / totalDetections) * 100).toFixed(1)}%), {pendingCount} pending review, {rejectedCount} rejected
-          </p>
-          <p>
-            <span className="text-neon-violet font-semibold">• Shadow Ratio Analysis:</span> {highShadowRatio} targets ({((highShadowRatio / totalDetections) * 100).toFixed(1)}%) meet the 40% shadow threshold requirement for valid seafloor detections
-          </p>
-          <p>
-            <span className="text-neon-violet font-semibold">• Target Distribution:</span> {Object.keys(classDistribution).length} unique target classifications detected
-          </p>
-          <p>
-            <span className="text-neon-violet font-semibold">• Recommendation:</span> {pendingCount > 0 ? `Review ${pendingCount} pending detections for validation.` : 'All detections have been reviewed.'} Focus human review on targets with low shadow ratios for quality assurance.
-          </p>
+        {/* Report Summary */}
+        <div className="glass-card rounded-lg p-8 border border-cyan-600/30 bg-navy-900/50">
+          <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-6 flex items-center gap-2">
+            <FileText className="w-5 h-5 text-cyan-400" />
+            Analysis Summary
+          </h3>
+          
+          {totalDetections > 0 ? (
+            <div className="space-y-4 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border-l-2 border-cyan-600 pl-4">
+                  <p className="text-text-muted mb-1">Detection Performance</p>
+                  <p className="text-lg text-cyan-400 font-semibold">{totalDetections}</p>
+                  <p className="text-text-muted text-xs mt-1">
+                    anomalies detected with average confidence of <span className="text-cyan-400">{(avgConfidence * 100).toFixed(1)}%</span>
+                  </p>
+                </div>
+
+                <div className="border-l-2 border-emerald-600 pl-4">
+                  <p className="text-text-muted mb-1">Validation Status</p>
+                  <p className="text-lg text-emerald-400 font-semibold">{confirmedCount} Verified</p>
+                  <p className="text-text-muted text-xs mt-1">
+                    {((confirmedCount / totalDetections) * 100).toFixed(1)}% confirmed • {pendingCount} pending • {rejectedCount} rejected
+                  </p>
+                </div>
+
+                <div className="border-l-2 border-amber-600 pl-4">
+                  <p className="text-text-muted mb-1">Shadow Ratio Validation</p>
+                  <p className="text-lg text-amber-400 font-semibold">{highShadowRatio} Valid</p>
+                  <p className="text-text-muted text-xs mt-1">
+                    {((highShadowRatio / totalDetections) * 100).toFixed(1)}% meet 40% shadow threshold requirement
+                  </p>
+                </div>
+
+                <div className="border-l-2 border-cyan-600 pl-4">
+                  <p className="text-text-muted mb-1">Target Classification</p>
+                  <p className="text-lg text-cyan-400 font-semibold">{Object.keys(classDistribution).length}</p>
+                  <p className="text-text-muted text-xs mt-1">
+                    unique target classes detected in survey
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 p-4 rounded-lg bg-cyan-600/5 border border-cyan-600/20">
+                <p className="text-sm text-text-secondary">
+                  <span className="text-cyan-400 font-semibold">Recommendation: </span>
+                  {pendingCount > 0 
+                    ? `Review ${pendingCount} pending detections for human-in-the-loop validation. Focus quality assurance on ${lowShadowRatio} targets with low shadow ratios for confirmation.`
+                    : `All ${totalDetections} detections have been reviewed. ${highShadowRatio} targets (${((highShadowRatio / totalDetections) * 100).toFixed(1)}%) meet shadow requirements for operational deployment.`
+                  }
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="p-8 text-center">
+              <p className="text-text-muted">No detections available. Upload a sonar image to generate reports.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
