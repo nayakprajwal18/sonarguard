@@ -1,4 +1,5 @@
 import { CheckCircle, XCircle, AlertTriangle, Gauge, Info } from 'lucide-react'
+import { useState } from 'react'
 
 function getReasonString(anomaly) {
   const shadowRatio = anomaly.shadow_ratio || 0
@@ -16,6 +17,20 @@ function getReasonString(anomaly) {
 }
 
 export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [pendingValidation, setPendingValidation] = useState(null)
+
+  const handleValidationClick = (isAccepted) => {
+    setPendingValidation(isAccepted)
+    setShowConfirmation(true)
+  }
+
+  const handleConfirm = () => {
+    onValidation(pendingValidation)
+    setShowConfirmation(false)
+    setPendingValidation(null)
+  }
+
   if (!selectedAnomaly) {
     return (
       <div className="glass-card rounded-lg p-8 border border-cyan-600/30 bg-navy-900/50 flex items-center justify-center h-96">
@@ -142,20 +157,54 @@ export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
       {/* Decision Buttons */}
       <div className="flex gap-2 pt-4 border-t border-cyan-600/20">
         <button
-          onClick={() => onValidation(true)}
-          className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-semibold text-sm transition-all transform hover:scale-105 active:scale-95"
+          onClick={() => handleValidationClick(true)}
+          className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-semibold text-sm transition-all"
         >
           <CheckCircle className="w-4 h-4" />
           Accept
         </button>
         <button
-          onClick={() => onValidation(false)}
-          className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white font-semibold text-sm transition-all transform hover:scale-105 active:scale-95"
+          onClick={() => handleValidationClick(false)}
+          className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white font-semibold text-sm transition-all"
         >
           <XCircle className="w-4 h-4" />
           Reject
         </button>
       </div>
+
+      {/* Confirmation Dialog */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass-card rounded-lg p-6 border border-cyan-600/30 bg-navy-900 max-w-sm w-full space-y-4">
+            <h3 className="text-lg font-bold text-text-primary">
+              {pendingValidation ? 'Accept Target?' : 'Reject Target?'}
+            </h3>
+            <p className="text-sm text-text-secondary">
+              {pendingValidation 
+                ? `Confirm that ${selectedAnomaly.id} is a valid detection. This action can be changed later.`
+                : `Mark ${selectedAnomaly.id} as rejected. This will flag it as a false positive.`}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="flex-1 py-2 px-3 rounded-lg border border-cyan-600/30 text-text-secondary hover:bg-cyan-500/10 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirm}
+                className={`flex-1 py-2 px-3 rounded-lg text-white font-semibold transition-colors ${
+                  pendingValidation
+                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    : 'bg-red-600 hover:bg-red-700'
+                }`}
+              >
+                {pendingValidation ? 'Accept' : 'Reject'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Summary */}
       <div className="p-3 bg-navy-800/40 rounded-lg border border-cyan-600/20 text-xs text-text-muted space-y-1">

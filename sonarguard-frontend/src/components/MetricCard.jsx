@@ -21,16 +21,16 @@ export default function MetricCard({ icon: Icon, label, value, trend, color }) {
   }
 
   return (
-    <div className={`glass-dark rounded-lg p-6 border ${colorClasses[color]} hover:border-opacity-100 transition-all duration-200 group`}>
+    <div className={`glass-dark rounded-lg p-6 border ${colorClasses[color]} hover:border-opacity-100 hover:shadow-lg hover:shadow-${color}-500/20 transition-all duration-200 transform hover:scale-105 group`}>
       <div className="flex items-start justify-between mb-4">
-        <div className={`p-3 rounded-lg bg-opacity-20 ${iconColors[color]}`}>
+        <div className={`p-3 rounded-lg bg-opacity-20 ${iconColors[color]} group-hover:scale-110 transition-transform duration-200`}>
           <Icon className={`w-6 h-6 ${iconColors[color]}`} />
         </div>
       </div>
       <div>
         <p className="text-text-muted text-xs uppercase tracking-wide mb-2">{label}</p>
-        <h3 className={`text-3xl font-bold ${valueColors[color]} mb-2`}>{value}</h3>
-        <p className="text-xs text-text-muted">{trend}</p>
+        <h3 className={`text-3xl font-bold ${valueColors[color]} mb-2 group-hover:text-opacity-100 transition-all`}>{value}</h3>
+        <p className="text-xs text-text-muted group-hover:text-text-secondary transition-colors">{trend}</p>
       </div>
     </div>
   )
