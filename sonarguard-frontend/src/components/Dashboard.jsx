@@ -20,16 +20,25 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
       const formData = new FormData()
       formData.append('file', file)
       
+      console.log('Uploading file:', file.name, 'Size:', file.size)
+      
       const response = await api.post('/upload-sonar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       
+      console.log('Upload response:', response.data)
+      
       if (response.data && response.data.detections) {
+        console.log('Detections received:', response.data.detections.length)
         onImageUpload(response.data.detections, response.data.processed_image)
+      } else {
+        setUploadError('Invalid response format - no detections field')
+        console.error('No detections in response:', response.data)
       }
     } catch (err) {
       console.error('Upload failed:', err)
-      setUploadError('Failed to upload image. Please try again.')
+      console.error('Error details:', err.response?.data || err.message)
+      setUploadError(`Failed to upload image: ${err.response?.data?.detail || err.message}`)
     } finally {
       setUploadLoading(false)
       event.target.value = ''
