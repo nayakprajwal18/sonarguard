@@ -1,4 +1,4 @@
-import { CheckCircle, XCircle, AlertTriangle, Gauge } from 'lucide-react'
+import { CheckCircle, XCircle, AlertTriangle, Gauge, Info } from 'lucide-react'
 
 function getReasonString(anomaly) {
   const shadowRatio = anomaly.shadow_ratio || 0
@@ -18,10 +18,11 @@ function getReasonString(anomaly) {
 export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
   if (!selectedAnomaly) {
     return (
-      <div className="w-80 glass-card rounded-lg p-6 border border-accent-purple/20 flex items-center justify-center min-h-screen">
+      <div className="glass-card rounded-lg p-8 border border-cyan-600/30 bg-navy-900/50 flex items-center justify-center h-96">
         <div className="text-center space-y-3">
-          <AlertTriangle className="w-12 h-12 text-slate-text/50 mx-auto" />
-          <p className="text-slate-text/60 text-sm">Select an anomaly to view XAI evidence</p>
+          <Info className="w-12 h-12 text-cyan-500/30 mx-auto" />
+          <p className="text-text-secondary text-sm">Select a target from the swath</p>
+          <p className="text-text-muted text-xs">to review evidence and make validation decisions</p>
         </div>
       </div>
     )
@@ -33,80 +34,67 @@ export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
   const shadowPercent = (selectedAnomaly.shadow_ratio * 100).toFixed(1)
 
   return (
-    <div className="w-80 glass-card rounded-lg p-6 border border-accent-purple/20 overflow-y-auto flex flex-col gap-6">
+    <div className="glass-card rounded-lg p-6 border border-cyan-600/30 bg-navy-900/50 overflow-y-auto flex flex-col gap-6 h-full">
       {/* Header */}
-      <div className="space-y-2 pb-4 border-b border-accent-purple/20">
+      <div className="space-y-3 pb-4 border-b border-cyan-600/20">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-neon-violet">{selectedAnomaly.id}</h2>
-          <span className="text-xs px-2 py-1 rounded-full bg-neon-violet/20 text-neon-violet">
+          <h2 className="text-lg font-bold text-cyan-400">{selectedAnomaly.id}</h2>
+          <span className="text-xs px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 uppercase tracking-wide font-semibold">
             {selectedAnomaly.target_class}
           </span>
         </div>
-        <p className="text-xs text-slate-text/70">Explainable AI Evidence Panel</p>
+        <p className="text-xs text-text-muted">Explainable AI Evidence</p>
       </div>
 
       {/* Plain-English Reasoning */}
-      <div className="p-4 bg-neon-violet/5 rounded-lg border border-neon-violet/20">
-        <p className="text-sm text-slate-text leading-relaxed">{getReasonString(selectedAnomaly)}</p>
+      <div className="p-4 bg-cyan-500/10 rounded-lg border border-cyan-600/20">
+        <p className="text-sm text-text-secondary leading-relaxed">{getReasonString(selectedAnomaly)}</p>
       </div>
 
       {/* Target Metrics */}
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-electric-cyan">Target Metrics</h3>
+        <h3 className="text-xs font-bold text-cyan-400 uppercase tracking-wide">Target Metrics</h3>
         
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-slate-text">Target ID:</span>
-            <span className="font-mono text-neon-violet">{selectedAnomaly.id}</span>
+        <div className="space-y-2 text-xs">
+          <div className="flex justify-between items-center px-3 py-2 bg-navy-800/30 rounded-lg">
+            <span className="text-text-muted">Target ID</span>
+            <span className="font-mono text-cyan-400">{selectedAnomaly.id}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-slate-text">Classification:</span>
-            <span className="text-neon-violet font-semibold">{selectedAnomaly.target_class}</span>
+          <div className="flex justify-between items-center px-3 py-2 bg-navy-800/30 rounded-lg">
+            <span className="text-text-muted">Classification</span>
+            <span className="text-cyan-300 font-semibold">{selectedAnomaly.target_class}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-slate-text">Pixel Width:</span>
-            <span className="font-mono text-electric-cyan">{selectedAnomaly.bbox_width}px</span>
+          <div className="flex justify-between items-center px-3 py-2 bg-navy-800/30 rounded-lg">
+            <span className="text-text-muted">Pixel Width</span>
+            <span className="font-mono text-cyan-400">{selectedAnomaly.bbox_width}px</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-slate-text">Pixel Height:</span>
-            <span className="font-mono text-electric-cyan">{selectedAnomaly.bbox_height}px</span>
+          <div className="flex justify-between items-center px-3 py-2 bg-navy-800/30 rounded-lg">
+            <span className="text-text-muted">Pixel Height</span>
+            <span className="font-mono text-cyan-400">{selectedAnomaly.bbox_height}px</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-slate-text">Estimated Elevation:</span>
-            <span className="font-mono text-neon-violet">{selectedAnomaly.elevation_estimate.toFixed(2)}m</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-slate-text">GPS Coordinates:</span>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-electric-cyan text-xs">
-                {selectedAnomaly.latitude.toFixed(4)}, {selectedAnomaly.longitude.toFixed(4)}
-              </span>
-              {selectedAnomaly.location_estimated && (
-                <span className="text-xs px-2 py-1 rounded-full bg-orange-500/20 text-orange-400 whitespace-nowrap">
-                  Estimated
-                </span>
-              )}
-            </div>
+          <div className="flex justify-between items-center px-3 py-2 bg-navy-800/30 rounded-lg">
+            <span className="text-text-muted">Est. Elevation</span>
+            <span className="font-mono text-cyan-400">{selectedAnomaly.elevation_estimate.toFixed(1)}m</span>
           </div>
         </div>
       </div>
 
       {/* Confidence Metric */}
-      <div className="space-y-3 p-4 bg-neon-violet/5 rounded-lg border border-neon-violet/20">
+      <div className="space-y-3 p-4 bg-cyan-500/10 rounded-lg border border-cyan-600/20">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-semibold text-neon-violet flex items-center gap-2">
+          <label className="text-xs font-bold text-cyan-400 uppercase tracking-wide flex items-center gap-2">
             <Gauge className="w-4 h-4" />
             Detection Confidence
           </label>
-          <span className="text-lg font-bold text-neon-violet">{confidencePercent}%</span>
+          <span className="text-lg font-bold text-cyan-400">{confidencePercent}%</span>
         </div>
-        <div className="w-full bg-accent-purple/30 rounded-full h-3 overflow-hidden">
+        <div className="w-full bg-navy-800 rounded-full h-2 overflow-hidden">
           <div
-            className="bg-gradient-to-r from-neon-violet to-electric-cyan h-3 transition-all"
+            className="bg-gradient-to-r from-cyan-500 to-cyan-400 h-2 transition-all"
             style={{ width: `${confidencePercent}%` }}
           ></div>
         </div>
-        <p className="text-xs text-slate-text/70">
+        <p className="text-xs text-text-muted leading-relaxed">
           {parseFloat(confidencePercent) > 80
             ? '✓ High confidence detection'
             : parseFloat(confidencePercent) > 50
@@ -118,63 +106,63 @@ export default function XAIEvidencePanel({ selectedAnomaly, onValidation }) {
       {/* Shadow Ratio Analysis */}
       <div className={`space-y-3 p-4 rounded-lg border ${
         isHighConfidenceShadow
-          ? 'bg-green-500/5 border-green-500/20'
-          : 'bg-orange-500/5 border-orange-500/20'
+          ? 'bg-emerald-500/10 border-emerald-600/20'
+          : 'bg-amber-500/10 border-amber-600/20'
       }`}>
         <div className="flex items-center justify-between">
-          <label className="text-sm font-semibold flex items-center gap-2">
-            <span className={isHighConfidenceShadow ? 'text-green-400' : 'text-orange-400'}>
+          <label className="text-xs font-bold uppercase tracking-wide flex items-center gap-2">
+            <span className={isHighConfidenceShadow ? 'text-emerald-400' : 'text-amber-400'}>
               Acoustic Shadow Contrast
             </span>
           </label>
-          <span className={`text-lg font-bold ${isHighConfidenceShadow ? 'text-green-400' : 'text-orange-400'}`}>
+          <span className={`text-lg font-bold ${isHighConfidenceShadow ? 'text-emerald-400' : 'text-amber-400'}`}>
             {shadowPercent}%
           </span>
         </div>
-        <div className="w-full bg-accent-purple/30 rounded-full h-3 overflow-hidden">
+        <div className="w-full bg-navy-800 rounded-full h-2 overflow-hidden">
           <div
-            className={`h-3 transition-all ${
+            className={`h-2 transition-all ${
               isHighConfidenceShadow
-                ? 'bg-gradient-to-r from-green-500 to-green-400'
-                : 'bg-gradient-to-r from-orange-500 to-orange-400'
+                ? 'bg-gradient-to-r from-emerald-500 to-emerald-400'
+                : 'bg-gradient-to-r from-amber-500 to-amber-400'
             }`}
             style={{ width: `${Math.min(shadowPercent, 100)}%` }}
           ></div>
         </div>
-        <div className="space-y-1 text-xs text-slate-text/70">
-          <p>Threshold: {(shadowRatioThreshold * 100).toFixed(0)}% (required for seafloor confirmation)</p>
-          <p className={isHighConfidenceShadow ? 'text-green-400' : 'text-orange-400'}>
+        <div className="space-y-1 text-xs text-text-muted">
+          <p>Threshold: {(shadowRatioThreshold * 100).toFixed(0)}% (seafloor confirmation)</p>
+          <p className={isHighConfidenceShadow ? 'text-emerald-400' : 'text-amber-400'}>
             {isHighConfidenceShadow
-              ? '✓ Shadow ratio CONFIRMED - Valid target with confirmed seafloor elevation'
-              : '⚠ Shadow ratio LOW - Target may be false positive. Review acoustic signature.'}
+              ? '✓ Shadow CONFIRMED - Valid target with acoustic elevation'
+              : '⚠ Shadow LOW - May be false positive'}
           </p>
         </div>
       </div>
 
       {/* Decision Buttons */}
-      <div className="flex gap-3 pt-4 border-t border-accent-purple/20">
+      <div className="flex gap-2 pt-4 border-t border-cyan-600/20">
         <button
           onClick={() => onValidation(true)}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold transition-all transform hover:scale-105"
+          className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-semibold text-sm transition-all transform hover:scale-105 active:scale-95"
         >
-          <CheckCircle className="w-5 h-5" />
+          <CheckCircle className="w-4 h-4" />
           Accept
         </button>
         <button
           onClick={() => onValidation(false)}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white font-semibold transition-all transform hover:scale-105"
+          className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white font-semibold text-sm transition-all transform hover:scale-105 active:scale-95"
         >
-          <XCircle className="w-5 h-5" />
+          <XCircle className="w-4 h-4" />
           Reject
         </button>
       </div>
 
-      {/* Confidence Summary */}
-      <div className="p-3 bg-accent-purple/10 rounded-lg border border-accent-purple/20 text-xs text-slate-text/70 space-y-1">
-        <p className="font-semibold text-slate-text">Detection Summary:</p>
-        <p>• Confidence: {parseFloat(confidencePercent)}% detection accuracy</p>
-        <p>• Shadow Analysis: {isHighConfidenceShadow ? 'VALID' : 'NEEDS REVIEW'}</p>
-        <p>• Status: {selectedAnomaly.validated === null ? 'Awaiting human validation' : selectedAnomaly.validated ? 'ACCEPTED' : 'REJECTED'}</p>
+      {/* Summary */}
+      <div className="p-3 bg-navy-800/40 rounded-lg border border-cyan-600/20 text-xs text-text-muted space-y-1">
+        <p className="font-semibold text-text-secondary">Summary</p>
+        <p>• Confidence: {parseFloat(confidencePercent)}%</p>
+        <p>• Shadow: {isHighConfidenceShadow ? 'VALID' : 'NEEDS REVIEW'}</p>
+        <p>• Status: {selectedAnomaly.validated === null ? 'Awaiting validation' : selectedAnomaly.validated ? 'ACCEPTED' : 'REJECTED'}</p>
       </div>
     </div>
   )
