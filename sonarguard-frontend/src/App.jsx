@@ -40,6 +40,7 @@ export default function App() {
   const handleImageUpload = (detections, processedImage) => {
     setAnomalies(detections)
     setSampleSonarImage(processedImage)
+    setCurrentPage('swath')
   }
 
   const renderPage = () => {

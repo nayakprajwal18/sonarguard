@@ -7,6 +7,7 @@ import api from '../services/api'
 export default function Dashboard({ anomalies, loading, onImageUpload }) {
   const [uploadLoading, setUploadLoading] = useState(false)
   const [uploadError, setUploadError] = useState(null)
+  const [uploadSuccess, setUploadSuccess] = useState(null)
   const [showHowItWorks, setShowHowItWorks] = useState(false)
 
   const handleFileUpload = async (event) => {
@@ -16,6 +17,7 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
     try {
       setUploadLoading(true)
       setUploadError(null)
+      setUploadSuccess(null)
       
       const formData = new FormData()
       formData.append('file', file)
@@ -30,6 +32,7 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
       
       if (response.data && response.data.detections) {
         console.log('Detections received:', response.data.detections.length)
+        setUploadSuccess(`Detected ${response.data.detections.length} object(s)`)
         onImageUpload(response.data.detections, response.data.processed_image)
       } else {
         setUploadError('Invalid response format - no detections field')
@@ -85,6 +88,11 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
         {uploadError && (
           <div className="mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
             <p className="text-red-400 text-sm">{uploadError}</p>
+          </div>
+        )}
+        {uploadSuccess && (
+          <div className="mt-3 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+            <p className="text-green-400 text-sm">{uploadSuccess}</p>
           </div>
         )}
         {uploadLoading && (
