@@ -94,14 +94,37 @@ export default function SurveyMap({ anomalies }) {
             </button>
           </div>
 
+          {/* Legend - Moved Above Map */}
+          <div className="flex items-center justify-between pb-4 border-b border-cyan-600/20">
+            <div className="flex gap-6 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-cyan-500"></div>
+                <span className="text-text-muted">Pending Review</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                <span className="text-text-muted">Verified</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <span className="text-text-muted">Rejected</span>
+              </div>
+            </div>
+            <div className="text-xs text-text-muted">
+              Total Targets: <span className="font-semibold text-cyan-400">{anomalies.length}</span>
+            </div>
+          </div>
+
           {/* SVG Map */}
-          <svg
-            width="100%"
-            height="600"
-            viewBox="0 0 800 600"
-            className="w-full rounded-lg border border-cyan-600/20 bg-navy-950/50"
-            style={{ cursor: 'default' }}
-          >
+          <div className="w-full bg-navy-950/50 rounded-lg border border-cyan-600/20" style={{ aspectRatio: '800 / 600' }}>
+            <svg
+              width="100%"
+              height="100%"
+              viewBox="0 0 800 600"
+              preserveAspectRatio="xMidYMid meet"
+              className="w-full h-full rounded-lg"
+              style={{ cursor: 'default' }}
+            >
             {/* Grid Background */}
             <defs>
               <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
@@ -190,26 +213,6 @@ export default function SurveyMap({ anomalies }) {
               )
             })}
           </svg>
-
-          {/* Legend */}
-          <div className="flex items-center justify-between pt-4 border-t border-cyan-600/20">
-            <div className="flex gap-6 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-cyan-500"></div>
-                <span className="text-text-muted">Pending Review</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                <span className="text-text-muted">Verified</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <span className="text-text-muted">Rejected</span>
-              </div>
-            </div>
-            <div className="text-xs text-text-muted">
-              Total Targets: <span className="font-semibold text-cyan-400">{anomalies.length}</span>
-            </div>
           </div>
 
           {/* Coordinate Reference Info */}
