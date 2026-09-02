@@ -74,29 +74,33 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
 
   return (
     <div className="h-full overflow-y-auto bg-gradient-to-b from-navy-950 to-navy-900">
-      {/* Header */}
+      {/* Header with Waveform Accent */}
       <div className="border-b border-cyan-600/20 bg-navy-950/80 backdrop-blur-sm sticky top-0 z-20">
         <div className="px-8 py-6">
-          <div className="flex items-end justify-between mb-3">
+          <div className="flex items-end justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-text-primary">SONARGUARD</h1>
-              <p className="text-sm text-text-muted mt-1">Underwater Intelligence Platform</p>
+              <h1 className="text-3xl font-bold text-text-primary">SONAR COMMAND CENTER</h1>
+              <p className="text-sm text-text-muted mt-1">Real-time detection and human-in-the-loop validation dashboard</p>
             </div>
-            <div className="text-right">
-              <div className="flex items-center gap-4 mb-2">
-                <div className="text-sm">
-                  <p className="text-text-muted text-xs uppercase tracking-wide">Survey Status</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span className="font-mono text-cyan-400">●ONLINE</span>
-                  </div>
-                </div>
-                <div className="border-l border-cyan-600/30 pl-4">
-                  <p className="text-text-muted text-xs uppercase tracking-wide">Last Analysis</p>
-                  <p className="font-mono text-cyan-400 text-sm mt-1">{new Date().toLocaleTimeString()}</p>
-                </div>
-              </div>
-            </div>
+            {/* Decorative Waveform Visualization */}
+            <svg width="160" height="45" viewBox="0 0 160 45" className="opacity-50">
+              <polyline
+                points="0,22 8,18 16,26 24,12 32,30 40,8 48,35 56,5 64,40 72,2 80,45 88,0 96,43 104,3 112,42 120,4 128,40 136,5 144,35 152,12 160,22"
+                stroke="url(#waveGradient)"
+                strokeWidth="2"
+                fill="none"
+                vectorEffect="non-scaling-stroke"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <defs>
+                <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.5" />
+                  <stop offset="50%" stopColor="#0ea5e9" stopOpacity="0.9" />
+                  <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.5" />
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
         </div>
       </div>
