@@ -83,7 +83,14 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
               <p className="text-sm text-text-muted mt-1">Real-time detection and human-in-the-loop validation dashboard</p>
             </div>
             {/* Decorative Waveform Visualization */}
-            <svg width="160" height="45" viewBox="0 0 160 45" className="opacity-50">
+            <svg 
+              width="160" 
+              height="45" 
+              viewBox="0 0 160 45" 
+              className="opacity-50"
+              aria-label="Sonar waveform visualization"
+              role="img"
+            >
               <polyline
                 points="0,22 8,18 16,26 24,12 32,30 40,8 48,35 56,5 64,40 72,2 80,45 88,0 96,43 104,3 112,42 120,4 128,40 136,5 144,35 152,12 160,22"
                 stroke="url(#waveGradient)"
@@ -240,12 +247,14 @@ export default function Dashboard({ anomalies, loading, onImageUpload }) {
               <button
                 onClick={() => setShowHowItWorks(!showHowItWorks)}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-cyan-500/5 transition-colors"
+                aria-expanded={showHowItWorks}
+                aria-controls="how-it-works-content"
               >
                 <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">How It Works</h3>
                 <span className={`text-2xl text-text-muted transition-transform ${showHowItWorks ? 'rotate-180' : ''}`}>▼</span>
               </button>
               {showHowItWorks && (
-                <div className="px-6 py-4 border-t border-cyan-600/20 space-y-3 text-sm text-text-secondary">
+                <div id="how-it-works-content" className="px-6 py-4 border-t border-cyan-600/20 space-y-3 text-sm text-text-secondary">
                   <div className="flex gap-3">
                     <div className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 text-xs font-bold">1</div>
                     <p>Upload a side-scan sonar image from your survey</p>

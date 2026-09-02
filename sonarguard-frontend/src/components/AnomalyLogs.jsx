@@ -101,6 +101,8 @@ export default function AnomalyLogs({ anomalies, setAnomalies }) {
               <button
                 onClick={exportToJSON}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 transition-colors text-sm font-medium"
+                title="Export anomalies as JSON"
+                aria-label="Export detection data as JSON file"
               >
                 <FileJson className="w-4 h-4" />
                 JSON
@@ -108,6 +110,8 @@ export default function AnomalyLogs({ anomalies, setAnomalies }) {
               <button
                 onClick={exportToCSV}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 transition-colors text-sm font-medium"
+                title="Export anomalies as CSV"
+                aria-label="Export detection data as CSV spreadsheet"
               >
                 <FileText className="w-4 h-4" />
                 CSV
@@ -219,7 +223,8 @@ export default function AnomalyLogs({ anomalies, setAnomalies }) {
                         <button
                           onClick={() => deleteAnomaly(anomaly.id)}
                           className="p-2 rounded-lg hover:bg-red-600/10 text-red-400/50 hover:text-red-400 transition-colors"
-                          title="Delete"
+                          title={`Delete anomaly ${anomaly.id}`}
+                          aria-label={`Delete detection record ${anomaly.id}`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

@@ -87,6 +87,8 @@ export default function SurveyMap({ anomalies }) {
                   ? 'bg-cyan-600/30 text-cyan-300 border border-cyan-600/50'
                   : 'bg-cyan-600/10 text-cyan-400/50 border border-cyan-600/20'
               }`}
+              aria-label={showGrid ? 'Hide coordinate grid overlay' : 'Show coordinate grid overlay'}
+              title={showGrid ? 'Grid: ON' : 'Grid: OFF'}
             >
               Grid: {showGrid ? 'ON' : 'OFF'}
             </button>
