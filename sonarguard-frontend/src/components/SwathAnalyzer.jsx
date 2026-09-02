@@ -22,8 +22,8 @@ export default function SwathAnalyzer({ sonarImage, anomalies, setAnomalies }) {
   }, [sonarImage, anomalies, selectedAnomaly, showAnnotations])
 
   const drawGrid = (ctx, width, height, gridSize = 40) => {
-    ctx.strokeStyle = 'rgba(6, 182, 212, 0.08)'
-    ctx.lineWidth = 1
+    ctx.strokeStyle = 'rgba(6, 182, 212, 0.20)'
+    ctx.lineWidth = 0.5
     
     for (let x = 0; x < width; x += gridSize) {
       ctx.beginPath()
@@ -86,46 +86,50 @@ export default function SwathAnalyzer({ sonarImage, anomalies, setAnomalies }) {
             boxColor = '#EF4444'
           }
 
+          // Always draw bounding box
           ctx.strokeStyle = boxColor
           ctx.lineWidth = isSelected ? 3 : 2
           ctx.strokeRect(anomaly.bbox_x, anomaly.bbox_y, anomaly.bbox_width, anomaly.bbox_height)
 
+          // Only show additional elements when selected
           if (isSelected) {
+            // Glow effect
             ctx.strokeStyle = `rgba(34, 211, 238, 0.3)`
             ctx.lineWidth = 6
             ctx.strokeRect(anomaly.bbox_x, anomaly.bbox_y, anomaly.bbox_width, anomaly.bbox_height)
+
+            // Center marker
+            const centerX = anomaly.bbox_x + anomaly.bbox_width / 2
+            const centerY = anomaly.bbox_y + anomaly.bbox_height / 2
+            const markerSize = 6
+            ctx.strokeStyle = boxColor
+            ctx.lineWidth = 1.5
+            ctx.beginPath()
+            ctx.moveTo(centerX - markerSize, centerY)
+            ctx.lineTo(centerX + markerSize, centerY)
+            ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(centerX, centerY - markerSize)
+            ctx.lineTo(centerX, centerY + markerSize)
+            ctx.stroke()
+
+            // Confidence ring only when selected
+            const ringRadius = Math.sqrt(
+              Math.pow(anomaly.bbox_width / 2, 2) + Math.pow(anomaly.bbox_height / 2, 2)
+            )
+            ctx.strokeStyle = `rgba(6, 182, 212, ${anomaly.confidence * 0.4})`
+            ctx.lineWidth = 2
+            ctx.beginPath()
+            ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2)
+            ctx.stroke()
+
+            // ID label only when selected
+            ctx.fillStyle = `rgba(34, 211, 238, 0.9)`
+            ctx.fillRect(anomaly.bbox_x, anomaly.bbox_y - 25, 60, 20)
+            ctx.fillStyle = '#0F1419'
+            ctx.font = 'bold 12px Arial'
+            ctx.fillText(`${anomaly.id}`, anomaly.bbox_x + 5, anomaly.bbox_y - 10)
           }
-
-          const ringRadius = Math.sqrt(
-            Math.pow(anomaly.bbox_width / 2, 2) + Math.pow(anomaly.bbox_height / 2, 2)
-          )
-          const centerX = anomaly.bbox_x + anomaly.bbox_width / 2
-          const centerY = anomaly.bbox_y + anomaly.bbox_height / 2
-
-          ctx.strokeStyle = `rgba(6, 182, 212, ${anomaly.confidence * 0.4})`
-          ctx.lineWidth = 2
-          ctx.beginPath()
-          ctx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2)
-          ctx.stroke()
-
-          const markerSize = 6
-          ctx.strokeStyle = boxColor
-          ctx.lineWidth = 1.5
-          ctx.beginPath()
-          ctx.moveTo(centerX - markerSize, centerY)
-          ctx.lineTo(centerX + markerSize, centerY)
-          ctx.stroke()
-          ctx.beginPath()
-          ctx.moveTo(centerX, centerY - markerSize)
-          ctx.lineTo(centerX, centerY + markerSize)
-          ctx.stroke()
-
-          ctx.fillStyle = isSelected ? `rgba(34, 211, 238, 0.9)` : `rgba(6, 182, 212, 0.8)`
-          ctx.fillRect(anomaly.bbox_x, anomaly.bbox_y - 25, 60, 20)
-          
-          ctx.fillStyle = '#0F1419'
-          ctx.font = 'bold 12px Arial'
-          ctx.fillText(`${anomaly.id}`, anomaly.bbox_x + 5, anomaly.bbox_y - 10)
         })
       }
     }
@@ -230,7 +234,10 @@ export default function SwathAnalyzer({ sonarImage, anomalies, setAnomalies }) {
 
         {/* Processed Sonar Swath */}
         <div className="glass-card rounded-lg p-6 border border-cyan-600/30 bg-navy-900/50">
-          <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-4">Processed Swath (Detections)</h3>
+          <div className="space-y-2 mb-4">
+            <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">Processed Swath (Detections)</h3>
+            <p className="text-xs text-text-muted">AI-detected targets with acoustic confirmation. Click to select and review evidence.</p>
+          </div>
           <div className="relative">
             <canvas
               id="processed-sonar-canvas"
@@ -286,13 +293,13 @@ export default function SwathAnalyzer({ sonarImage, anomalies, setAnomalies }) {
                       <span className="text-xs text-text-muted">{anomaly.target_class}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-20 bg-navy-800 rounded-full h-1.5">
+                      <div className="w-32 bg-navy-800 rounded-full h-1.5">
                         <div
                           className="bg-gradient-to-r from-cyan-500 to-cyan-400 h-1.5 rounded-full"
                           style={{ width: `${anomaly.confidence * 100}%` }}
                         ></div>
                       </div>
-                      <span className="text-xs font-mono text-cyan-400 w-6 text-right">{(anomaly.confidence * 100).toFixed(0)}%</span>
+                      <span className="text-xs font-mono text-cyan-400 w-8 text-right">{(anomaly.confidence * 100).toFixed(0)}%</span>
                     </div>
                   </div>
                 </button>
