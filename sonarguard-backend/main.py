@@ -39,24 +39,6 @@ detection_pipeline = SonarDetectionPipeline()
 last_uploaded_image = None
 last_uploaded_anomalies = None
 
-app = FastAPI(
-    title="SonarGuard API",
-    description="AI-Powered Underwater Marine Debris Detection System",
-    version="1.0.0",
-    docs_url="/docs",
-    openapi_url="/openapi.json"
-)
-
-# CORS middleware - Allow all origins for development
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["*"],
-)
-
 def generate_sample_anomalies():
     """
     Fallback: Return hardcoded sample anomalies for demo mode only.
