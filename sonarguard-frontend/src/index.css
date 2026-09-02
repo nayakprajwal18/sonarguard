@@ -11,29 +11,44 @@
 html, body, #root {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #0A071B 0%, #140E2D 100%);
+  background: linear-gradient(135deg, #0F1419 0%, #1A1F2E 100%);
 }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  color: #A78BFA;
+  color: #F1F5F9;
   line-height: 1.6;
   overflow: hidden;
 }
 
-/* Glassmorphism Effect */
+/* Glassmorphism Effect - Naval Theme */
 .glass {
-  background: rgba(20, 14, 45, 0.5);
-  border: 1px solid rgba(46, 31, 84, 0.3);
+  background: rgba(26, 31, 46, 0.4);
+  border: 1px solid rgba(6, 182, 212, 0.15);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
 .glass-card {
-  background: rgba(20, 14, 45, 0.6);
-  border: 1px solid rgba(46, 31, 84, 0.4);
+  background: rgba(26, 31, 46, 0.5);
+  border: 1px solid rgba(6, 182, 212, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-dark {
+  background: rgba(15, 20, 25, 0.6);
+  border: 1px solid rgba(6, 182, 212, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Sonar Grid Background */
+.sonar-grid {
+  background-image: 
+    linear-gradient(rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 /* Scrollbar Styling */
@@ -43,28 +58,94 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(20, 14, 45, 0.3);
+  background: rgba(26, 31, 46, 0.3);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.4);
+  background: rgba(6, 182, 212, 0.3);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.6);
+  background: rgba(6, 182, 212, 0.6);
 }
 
 /* Custom animations */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
   }
   50% {
-    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.4);
   }
 }
 
 .pulse-glow {
-  animation: pulse-glow 2s infinite;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Sonar scan line effect */
+@keyframes sonar-scan {
+  0% {
+    top: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.sonar-scan::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(6, 182, 212, 0.8),
+    transparent
+  );
+  animation: sonar-scan 3s ease-in infinite;
+}
+
+/* Target marker glow */
+@keyframes target-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(6, 182, 212, 0);
+  }
+}
+
+.target-pulse {
+  animation: target-pulse 2s infinite;
+}
+
+/* Status indicator light */
+.status-light {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: target-pulse 2s infinite;
+}
+
+.status-light.online {
+  background-color: #10B981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+}
+
+.status-light.warning {
+  background-color: #F59E0B;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+}
+
+.status-light.offline {
+  background-color: #EF4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
 }

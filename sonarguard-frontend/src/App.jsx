@@ -61,12 +61,12 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen bg-obsidian text-lavender overflow-hidden">
+    <div className="flex h-screen bg-navy-950 text-text-primary overflow-hidden">
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       <main className="flex-1 overflow-hidden relative">
         {error && (
           <div className="absolute top-4 right-4 left-64 z-50">
-            <div className="glass-card rounded-lg p-4 border border-red-500/30 bg-red-500/10 flex items-start gap-3">
+            <div className="glass-card rounded-lg p-4 border border-red-600/50 bg-red-600/10 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-red-400 font-semibold text-sm">Connection Error</p>
@@ -77,10 +77,10 @@ export default function App() {
         )}
         
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-obsidian/50 backdrop-blur-sm z-40">
+          <div className="absolute inset-0 flex items-center justify-center bg-navy-950/50 backdrop-blur-sm z-40">
             <div className="text-center space-y-3">
-              <Loader className="w-12 h-12 text-neon-violet animate-spin mx-auto" />
-              <p className="text-slate-text">Loading sonar data...</p>
+              <Loader className="w-12 h-12 text-cyan-500 animate-spin mx-auto" />
+              <p className="text-text-secondary">Loading sonar data...</p>
             </div>
           </div>
         )}
